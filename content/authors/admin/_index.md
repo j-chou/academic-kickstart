@@ -21,18 +21,18 @@ organizations:
 bio: Data Scientist
 
 interests:
-- Artificial Intelligence
-- Computational Linguistics
-- Information Retrieval
+- Causal Inference
+- Bayesian inference
+- Reinforcement Learning
 
-education:
-  courses:
-  - course:
-    institution:
-    year:
-  - course:
-    institution:
-    year:
+#education:
+#  courses:
+#  - course:
+#    institution:
+#    year:
+#  - course:
+#    institution:
+#    year:
 
 # Social/Academic Networking
 # For available icons, see: https://sourcethemes.com/academic/docs/widgets/#icons
@@ -42,9 +42,9 @@ social:
 - icon: envelope
   icon_pack: fas
   link: 'mailto:jedchou.h@gmail.com'  # For a direct email link, use "mailto:test@example.org".
-<!-- - icon: google-scholar
-  icon_pack: ai
-  link: https://scholar.google.co.uk/citations?user=sIwtMXoAAAAJ -->
+# - icon: google-scholar
+#  icon_pack: ai
+#  link: https://scholar.google.co.uk/citations?user=sIwtMXoAAAAJ
 - icon: github
   icon_pack: fab
   link: https://github.com/j-chou
@@ -59,7 +59,11 @@ email: "jedchou.h@gmail.com"
 
 # Organizational groups that you belong to (for People widget)
 #   Set this to `[]` or comment out if you are not using People widget.  
-<!-- user_groups:
-- Researchers
-- Visitors -->
+# user_groups:
+#   Researchers
+#   Visitors
 ---
+
+I'm a data scientist at Target, where I'm developing advertising attribution models and scalable systems for running A/B tests.
+
+I'm particularly interested in developing methods that allow us to learn about causal relationships from large-scale observational data. Previously, I obtained an MS in mathematics from the University of Illinois at Urbana-Champaign where I've worked on algorithms for constructing evolutionary trees and  algebraic geometry. I've also worked in data science roles at Yahoo, Anheuser-Busch InBev, and Personify Inc.
