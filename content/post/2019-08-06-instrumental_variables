@@ -1,0 +1,14 @@
++++
+date = "2019-08-06T13:41:33-05:00"
+draft = false
+title = "Instrumental Variables"
+
++++
+
+I've heard of the method of instrumental variables a lot from
+reading the econometrics literature, but it wasn't until recently that
+that I began to see how great of a thing it is in the data scientist's toolbox.
+
+The setting is like this. We have a binary treatment $X$ like exposure to an ad,
+and we want to understand its effect on an outcome $Y$, like sales.
+$$Y = 

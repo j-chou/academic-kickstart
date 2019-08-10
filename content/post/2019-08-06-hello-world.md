@@ -1,0 +1,10 @@
+---
+layout: post
+title: Hello World!
+---
+
+
+First post! I haven't decided exactly what will exist here,
+but in general you can expect to find articles on things I've
+recently been thinking about, whether that's statistics or math or
+some interesting paper I recently read. 
