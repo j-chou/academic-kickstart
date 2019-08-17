@@ -91,8 +91,10 @@ and assume $\mathbb{E}(\epsilon | X) = 0$.&lt;/p&gt;
 confounding variables&lt;/p&gt;
 
 &lt;p&gt;$$
+\begin{aligned}
 Y = \beta X + \gamma W + \epsilon &lt;br /&gt;
 X = \alpha W + \nu
+\end{aligned}
 $$&lt;/p&gt;
 
 &lt;p&gt;where $\mathbb{E}(\epsilon | X, W) = 0$ and $\mathbb{E}(\nu | W) = 0$. The theorem of conditional ignorability says that if the potential outcomes $Y^{1}, Y^{0}$ are conditionally independent of $X$ given $W$, then assuming $\mathbb{E}(\epsilon | X, W) = 0$, the least-squares estimate for $\beta$ in the model above would be an unbiased estimate for the ATE.&lt;/p&gt;

@@ -19,8 +19,10 @@ This problem is called *confounding* and can be described mathematically by lett
 confounding variables
 
 $$
+\begin{aligned}
 Y = \beta X + \gamma W + \epsilon \\
 X = \alpha W + \nu
+\end{aligned}
 $$
 
 where $\mathbb{E}(\epsilon | X, W) = 0$ and $\mathbb{E}(\nu | W) = 0$. The theorem of conditional ignorability says that if the potential outcomes $Y^{1}, Y^{0}$ are conditionally independent of $X$ given $W$, then assuming $\mathbb{E}(\epsilon | X, W) = 0$, the least-squares estimate for $\beta$ in the model above would be an unbiased estimate for the ATE.
