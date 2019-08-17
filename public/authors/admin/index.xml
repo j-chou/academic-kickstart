@@ -1,14 +1,27 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title></title>
+    <title>jedchou</title>
     <link>/authors/admin/</link>
-    <description>Recent content on </description>
-    <generator>Hugo -- gohugo.io</generator>
-    <language>en-us</language>
+      <atom:link href="/authors/admin/index.xml" rel="self" type="application/rss+xml" />
+    <description>jedchou</description>
+    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language>
+    <image>
+      <url>/img/icon-192.png</url>
+      <title>jedchou</title>
+      <link>/authors/admin/</link>
+    </image>
     
-	<atom:link href="/authors/admin/index.xml" rel="self" type="application/rss+xml" />
-    
+    <item>
+      <title></title>
+      <link>/authors/admin/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>/authors/admin/</guid>
+      <description>&lt;p&gt;I&amp;rsquo;m a data scientist at Target, where I&amp;rsquo;m developing advertising attribution models and scalable systems for running A/B tests.&lt;/p&gt;
+
+&lt;p&gt;I&amp;rsquo;m particularly interested in developing methods that allow us to learn about causal relationships from large-scale observational data. Previously, I obtained an MS in mathematics from the University of Illinois at Urbana-Champaign where I&amp;rsquo;ve worked on algorithms for constructing evolutionary trees and  algebraic geometry. I&amp;rsquo;ve also worked in data science roles at Yahoo, Anheuser-Busch InBev, and Personify Inc.&lt;/p&gt;
+</description>
+    </item>
     
   </channel>
 </rss>

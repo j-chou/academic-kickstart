@@ -1,14 +1,157 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Posts on </title>
+    <title>Posts | jedchou</title>
     <link>/post/</link>
-    <description>Recent content in Posts on </description>
-    <generator>Hugo -- gohugo.io</generator>
-    <language>en-us</language>
+      <atom:link href="/post/index.xml" rel="self" type="application/rss+xml" />
+    <description>Posts</description>
+    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><lastBuildDate>Tue, 06 Aug 2019 13:41:33 -0500</lastBuildDate>
+    <image>
+      <url>/img/icon-192.png</url>
+      <title>Posts</title>
+      <link>/post/</link>
+    </image>
     
-	<atom:link href="/post/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Clustered Standard Errors</title>
+      <link>/post/2019-09-01-clustered_standard_errors/</link>
+      <pubDate>Tue, 06 Aug 2019 13:41:33 -0500</pubDate>
+      <guid>/post/2019-09-01-clustered_standard_errors/</guid>
+      <description>&lt;p&gt;I&amp;rsquo;ve seen instrumental variables mentioned a lot from
+reading the econometrics literature, but it wasn&amp;rsquo;t until recently that
+that I began to see how natural of a tool it is.&lt;/p&gt;
+
+&lt;p&gt;The setting is like this. We want to estimate the average effect of a binary treatment $X$ (like exposure to an ad) on an outcome $Y$ (like sales). Suppose for two weeks we track a group of people and whether they were exposed to the ad ($X = 1$) or not (($X = 0$) and what their sales were in a subsequent period. We decide to fit a linear regression model to the data:
+$$Y = \beta X + \epsilon$$
+and assume $\mathbb{E}(\epsilon | X) = 0$.&lt;/p&gt;
+
+&lt;p&gt;Is $\beta$ the average treatment effect of $X$ on $Y$?&lt;/p&gt;
+
+&lt;p&gt;Almost never, unless the data was collected from a carefully controlled A/B test. Basically this is because people in the treatment group ($X = 1$) are not the same as people in the control group ($X = 0$). People that saw the ad are more likely to buy than people who didn&amp;rsquo;t see the ad because of ad targeting. Our least-squares estimate $\hat{\beta}$ is likely biased upwards, and the better the ad targeting for this ad, the worse this problem becomes.&lt;/p&gt;
+
+&lt;p&gt;This problem is called &lt;em&gt;confounding&lt;/em&gt; and can be describe mathematically by letting $W$ represent
+confounding variables&lt;/p&gt;
+
+&lt;p&gt;$$
+Y = \beta X + \gamma W + \epsilon &lt;br /&gt;
+X = \alpha W + \nu
+$$&lt;/p&gt;
+
+&lt;p&gt;where $\mathbb{E}(\epsilon | X, W) = 0$ and $\mathbb{E}(\nu | W) = 0$. The theorem of conditional ignorability says that if the potential outcomes $Y^{1}, Y^{0}$ are conditionally independent of $X$ given $W$, then assuming $\mathbb{E}(\epsilon | X, W) = 0$, the least-squares estimate for $\beta$ in the model above would be an unbiased estimate for the ATE.&lt;/p&gt;
+
+&lt;p&gt;Now in theory, if you were for example Google, you could achieve conditional ignorability by taking all the variables $W$ you fed into your algorithms for ad targeting and model just $Y = \beta X + \gamma W + \epsilon$ and get an unbiased estimate of the average treatment effect. There are two issues: you&amp;rsquo;re usually not Google and don&amp;rsquo;t have the data to adequately control for confounding. Second, even if you are Google, the algorithms used for ad targeting are enormously complex and rely on a large number of variables that may not even be clearly tracked. What else can you do?&lt;/p&gt;
+
+&lt;p&gt;In the happy case where you have an &lt;em&gt;instrumental variable&lt;/em&gt;, you can stil get unbiased estimates of the ATE without even modeling the confounding. An instrumental variable is just a variable that causes the treatment $X$ but doesn&amp;rsquo;t affect $Y$ except through $X$:&lt;/p&gt;
+
+&lt;p&gt;$$
+Y = \beta X + \gamma W + \epsilon &lt;br /&gt;
+X = \alpha W + \eta Z + \nu
+$$&lt;/p&gt;
+
+&lt;p&gt;To restate the issue, we cannot get unbiased estimates for $\beta$ in the model above, because we don&amp;rsquo;t have good knowledge of $W$. The idea behind IV is that we can measure how a change in the instrument $Z$ induces a change in the outcome $Y$. You can think about it like this: we&amp;rsquo;re trying to measure the partial derivative of $Y$ with respect to $X$: $\beta = \partial Y / \partial X$.
+Let&amp;rsquo;s think about $\partial Y / \partial W$ for a moment. From the chain rule we have&lt;/p&gt;
+
+&lt;p&gt;$$ \frac{\partial Y}{\partial W} = \frac{\partial Y} {\partial X} \frac{\partial X}{\partial W}$$&lt;/p&gt;
+
+&lt;p&gt;so rearranging terms we have&lt;/p&gt;
+
+&lt;p&gt;$$
+\beta = \frac{\partial Y}{\partial X} &lt;br /&gt;
+= \frac{ \frac{\partial Y}{\partial W} }{ \frac{\partial X}{\partial W} }
+$$&lt;/p&gt;
+
+&lt;p&gt;This leads to the Wald estimator for the ATE of a binary treatment variable when you have an IV and the 2-stage least squares estimate for the ATE in the case of a continuous treatment variable.&lt;/p&gt;
+</description>
+    </item>
     
+    <item>
+      <title>Double Machine Learning</title>
+      <link>/post/2019-08-10-double_machine_learning/</link>
+      <pubDate>Tue, 06 Aug 2019 13:41:33 -0500</pubDate>
+      <guid>/post/2019-08-10-double_machine_learning/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Instrumental Variables</title>
+      <link>/post/2019-08-06-instrumental_variables/</link>
+      <pubDate>Tue, 06 Aug 2019 13:41:33 -0500</pubDate>
+      <guid>/post/2019-08-06-instrumental_variables/</guid>
+      <description>&lt;p&gt;Instrumental variables are a super useful tool in causal inference for getting around the problem of confounding.&lt;/p&gt;
+
+&lt;p&gt;The setting is that we want to estimate the average effect of a treatment $X$ like exposure to an ad on an outcome $Y$ like sales. Suppose for two weeks we track a group of people and whether they were exposed to the ad ($X = 1$) or not (($X = 0$) and what their sales were over the next month. We decide to fit a linear regression model to the data:
+$$Y = \beta X + \epsilon$$
+and assume $\mathbb{E}(\epsilon | X) = 0$.&lt;/p&gt;
+
+&lt;p&gt;Is $\beta$ the average treatment effect of $X$ on $Y$?&lt;/p&gt;
+
+&lt;p&gt;Almost never, unless the data was collected from a carefully controlled A/B test. Basically this is because people in the treatment group ($X = 1$) are not the same as people in the control group ($X = 0$). People that saw the ad are more likely to buy than people who didn&amp;rsquo;t see the ad because of ad targeting. Our least-squares estimate $\hat{\beta}$ is likely biased upwards, and the better the ad targeting is for this ad, the worse this problem becomes.&lt;/p&gt;
+
+&lt;p&gt;This problem is called &lt;em&gt;confounding&lt;/em&gt; and can be described mathematically by letting $W$ represent
+confounding variables&lt;/p&gt;
+
+&lt;p&gt;$$
+Y = \beta X + \gamma W + \epsilon &lt;br /&gt;
+X = \alpha W + \nu
+$$&lt;/p&gt;
+
+&lt;p&gt;where $\mathbb{E}(\epsilon | X, W) = 0$ and $\mathbb{E}(\nu | W) = 0$. The theorem of conditional ignorability says that if the potential outcomes $Y^{1}, Y^{0}$ are conditionally independent of $X$ given $W$, then assuming $\mathbb{E}(\epsilon | X, W) = 0$, the least-squares estimate for $\beta$ in the model above would be an unbiased estimate for the ATE.&lt;/p&gt;
+
+&lt;p&gt;Now in theory, if you were for example Google, you could achieve conditional ignorability by taking all the variables $W$ you fed into your algorithms for ad targeting and model just $Y = \beta X + \gamma W + \epsilon$ and get an unbiased estimate of the average treatment effect. There are two issues: you&amp;rsquo;re usually not Google and don&amp;rsquo;t have the data to adequately control for confounding. Second, even if you are Google, the algorithms used for ad targeting are enormously complex and rely on a large number of variables that may not even be clearly tracked. What else can you do?&lt;/p&gt;
+
+&lt;p&gt;In the happy case where you have an &lt;em&gt;instrumental variable&lt;/em&gt;, you can still get unbiased estimates of the ATE without even modeling the confounding. An instrumental variable is just a variable that causes the treatment $X$ but doesn&amp;rsquo;t affect $Y$ except through $X$:&lt;/p&gt;
+
+&lt;p&gt;$$
+Y = \beta X + \gamma W + \epsilon &lt;br /&gt;
+X = \alpha W + \eta Z + \nu
+$$&lt;/p&gt;
+
+&lt;p&gt;The diagram below illustrates the instrumental variable.&lt;/p&gt;
+
+&lt;p&gt;To restate the issue, we cannot get unbiased estimates for $\beta$ in the model above, because we don&amp;rsquo;t have good knowledge of $W$. The idea behind IV is that we can measure how a change in the instrument $Z$ induces a change in the outcome $Y$. You can think about it like this: we&amp;rsquo;re trying to measure the partial derivative of $Y$ with respect to $X$: $\beta = \partial Y / \partial X$.
+Let&amp;rsquo;s think about $\partial Y / \partial W$ for a moment. From the chain rule we have&lt;/p&gt;
+
+&lt;p&gt;$$ \frac{\partial Y}{\partial W} = \frac{\partial Y} {\partial X} \frac{\partial X}{\partial W}$$&lt;/p&gt;
+
+&lt;p&gt;so rearranging terms we have&lt;/p&gt;
+
+&lt;p&gt;$$
+\beta = \frac{\partial Y}{\partial X} &lt;br /&gt;
+= \frac{ \frac{\partial Y}{\partial W} }{ \frac{\partial X}{\partial W} }
+$$&lt;/p&gt;
+
+&lt;p&gt;This leads to the Wald estimator for the ATE of a binary treatment variable when you have an IV and the 2-stage least squares estimate for the ATE in the case of a continuous treatment variable.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Orthogonal Random Forests</title>
+      <link>/post/2019-10-01-orthogonal_random_forests/</link>
+      <pubDate>Tue, 06 Aug 2019 13:41:33 -0500</pubDate>
+      <guid>/post/2019-10-01-orthogonal_random_forests/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>The ABRACADABRA Problem</title>
+      <link>/post/2019-09-01-abracadara/</link>
+      <pubDate>Tue, 06 Aug 2019 13:41:33 -0500</pubDate>
+      <guid>/post/2019-09-01-abracadara/</guid>
+      <description>&lt;p&gt;I was looking through some&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Hello World!</title>
+      <link>/post/2019-08-06-hello-world/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>/post/2019-08-06-hello-world/</guid>
+      <description>&lt;p&gt;First post! I haven&amp;rsquo;t decided exactly what will exist here,
+but in general you can expect to find articles on things I&amp;rsquo;ve
+recently been thinking about, whether that&amp;rsquo;s statistics or math or
+some interesting paper I recently read.&lt;/p&gt;
+</description>
+    </item>
     
   </channel>
 </rss>
