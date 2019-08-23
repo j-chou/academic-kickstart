@@ -7,7 +7,7 @@ diagram = true
 
 Instrumental variables are a super useful tool in causal inference for getting around the problem of confounding.
 
-Suppose we'd like to estimate the average effect of a treatment $X$ like exposure to an ad on an outcome $Y$ like sales. For two weeks we track a group of people and whether they were exposed to the ad ($X = 1$) or not (($X = 0$) and what their sales were over the next month. We decide to fit a linear regression model to the data:
+Suppose we'd like to estimate the average effect of a treatment $X$ like exposure to an ad on an outcome $Y$ like sales. For two weeks we track a group of people and whether they were exposed to the ad ($X = 1$) or not ($X = 0$) and what their sales were over the next month. We decide to fit a linear regression model to the data:
 $$Y = \beta X + \epsilon$$
 assuming $\mathbb{E}(\epsilon | X) = 0$.
 
@@ -25,9 +25,9 @@ X &=& \alpha W + \nu
 \end{eqnarray}
 $$
 
-where $\mathbb{E}(\epsilon | X, W) = 0$ and $\mathbb{E}(\nu | W) = 0$. If $\mathbb{E}(\epsilon | X, W) = 0$, then [conditional ignorability](https://en.wikipedia.org/wiki/Ignorability) is achieved, i.e. the potential outcomes $Y^{1}, Y^{0}$ are conditionally independent of $X$ given $W$. Then the least-squares estimate for $\beta$ in the model above would be an unbiased estimate for the ATE.
+where $\mathbb{E}(\epsilon | X, W) = 0$ and $\mathbb{E}(\nu | W) = 0$. If $\mathbb{E}(\epsilon | X, W) = 0$, then [conditional ignorability](https://en.wikipedia.org/wiki/Ignorability) is achieved, i.e. the potential outcomes $Y^{1}, Y^{0}$ are conditionally independent of $X$ given $W$. Then the least-squares estimate for $\beta$ in the $Y$-model above would be an unbiased estimate for the ATE.
 
-Now in theory, if you were for example Google, you could achieve conditional ignorability by taking all the variables $W$ you fed into your algorithms for ad targeting and model just $Y = \beta X + \gamma W + \epsilon$ and get an unbiased estimate of the average treatment effect. There are several issues with this approach. First, you're usually not Google and don't have the data to adequately control for confounding. Second, even if you are Google, the algorithms used for ad targeting are enormously complex and rely on a large number of variables that may not even be clearly tracked.  What else can you do?
+Now in theory, if you were for example Google, you could achieve conditional ignorability by taking all the variables $W$ you fed into your algorithms for ad targeting and model $Y = f(X, W)$ and get an unbiased estimate of the average treatment effect. There are several issues with this approach. First, you're usually not Google and don't have the data to adequately control for confounding. Second, even if you are Google, the algorithms used for ad targeting are enormously complex and rely on a large number of variables. What else can you do?
 
 In the happy case where you have an *instrumental variable*, you can still get unbiased estimates of the ATE without even modeling the confounding. An *instrumental variable* is just a variable that causes the treatment $X$ but doesn't affect $Y$ except through $X$:
 

@@ -13,11 +13,128 @@
     </image>
     
     <item>
+      <title>Bias from Unmeasured Confounding</title>
+      <link>/post/2019-08-25-bias_from_unmeasured_confounding/</link>
+      <pubDate>Tue, 06 Aug 2019 13:41:33 -0500</pubDate>
+      <guid>/post/2019-08-25-bias_from_unmeasured_confounding/</guid>
+      <description>&lt;p&gt;I was thinking about the effects of unmeasured confounding on estimates of treatment effects and found some pretty interesting results. I have the following equations:&lt;/p&gt;
+
+&lt;p&gt;$$
+\begin{eqnarray}
+y &amp;amp;=&amp;amp; x + \alpha_1 w + \epsilon_1\\&lt;br /&gt;
+x &amp;amp;=&amp;amp; \alpha_2 w + \epsilon_2
+\end{eqnarray}
+$$&lt;/p&gt;
+
+&lt;p&gt;where $\mathbb{E}(y | x, w) \sim N(x + \alpha_1 w, 1)$ and $\mathbb{E}(x | w) \sim N(\alpha_2 w, 1)$. I varied the strength of the confounder $w$ by letting $1 \leq \alpha_1, \alpha_2 \leq 10$ and then fitting the reduced model&lt;/p&gt;
+
+&lt;p&gt;$$
+y = \beta_{r} x
+$$&lt;/p&gt;
+
+&lt;p&gt;The graph below shows the bias $|\beta - \beta_{r}|$ in the estimate $\beta_r$ of the treatment effect as a function of $\alpha_1$ and $\alpha_2$.&lt;/p&gt;
+
+
+
+
+  
+
+
+
+
+&lt;figure&gt;
+
+  &lt;a data-fancybox=&#34;&#34; href=&#34;/img/bias_linear_confounding_20190822.png&#34; &gt;
+
+&lt;img src=&#34;/img/bias_linear_confounding_20190822.png&#34; &gt;
+&lt;/a&gt;
+
+
+&lt;figcaption data-pre=&#34;Figure &#34; data-post=&#34;:&#34; &gt;
+  &lt;h4&gt;Bias due to linear confounding.&lt;/h4&gt;
+  
+&lt;/figcaption&gt;
+
+&lt;/figure&gt;
+
+
+&lt;p&gt;I was quite surprised by the highly nonlinear nature of the graph. It looks like for any $\alpha_1$, bias is the worst when $\alpha_2 = 1$. I tried to derive the bias analytically as a function of the strength of confounding: $|\beta - \beta_r| = f(\alpha_1, \alpha_2)$, but it proved difficult. I think it&amp;rsquo;s something like&lt;/p&gt;
+
+&lt;p&gt;$$
+f(\alpha_1, \alpha_2) = \frac{\alpha_1}{2 \alpha_2 e^{1/\alpha_2} - 1}
+$$&lt;/p&gt;
+
+
+
+
+  
+
+
+
+
+&lt;figure&gt;
+
+  &lt;a data-fancybox=&#34;&#34; href=&#34;/img/bias_linear_confounding_alpha12_20190822.png&#34; &gt;
+
+&lt;img src=&#34;/img/bias_linear_confounding_alpha12_20190822.png&#34; &gt;
+&lt;/a&gt;
+
+
+&lt;figcaption data-pre=&#34;Figure &#34; data-post=&#34;:&#34; &gt;
+  &lt;h4&gt;Bias due to linear confounding.&lt;/h4&gt;
+  
+&lt;/figcaption&gt;
+
+&lt;/figure&gt;
+
+
+&lt;p&gt;I also made some visualizations of the bias under nonlinear confounding and the results were equally fascinating.&lt;/p&gt;
+
+
+
+
+  
+
+
+
+
+&lt;figure&gt;
+
+  &lt;a data-fancybox=&#34;&#34; href=&#34;/img/bias_quadratic_confounding_alpha1_20190822.png&#34; &gt;
+
+&lt;img src=&#34;/img/bias_quadratic_confounding_alpha1_20190822.png&#34; &gt;
+&lt;/a&gt;
+
+
+&lt;figcaption data-pre=&#34;Figure &#34; data-post=&#34;:&#34; &gt;
+  &lt;h4&gt;Bias due to quadratic confounding.&lt;/h4&gt;
+  
+&lt;/figcaption&gt;
+
+&lt;/figure&gt;
+
+
+&lt;p&gt;I&amp;rsquo;m sure someone has worked formulas for the bias in these scenarios since they are the most basic examples of confounding and I&amp;rsquo;d be very curious about the actual results.&lt;/p&gt;
+
+&lt;p&gt;But more generally these are problems of sensitivity analysis for causal inference.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
       <title>Clustered </title>
       <link>/post/2019-09-01-clustered_standard_errors/</link>
       <pubDate>Tue, 06 Aug 2019 13:41:33 -0500</pubDate>
       <guid>/post/2019-09-01-clustered_standard_errors/</guid>
       <description>&lt;p&gt;The question of when its necessary to adjust standard errors for clusters in an experiment has bothered me for a long time. My goal in this post is to achieve some resolution on this topic.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Confidence Intervals - One Method to Rule Them All</title>
+      <link>/post/2019-09-15-ci_one_method_to_rule_them_all/</link>
+      <pubDate>Tue, 06 Aug 2019 13:41:33 -0500</pubDate>
+      <guid>/post/2019-09-15-ci_one_method_to_rule_them_all/</guid>
+      <description>&lt;p&gt;This is a short post on the delta method&lt;/p&gt;
 </description>
     </item>
     
@@ -38,7 +155,7 @@
 
 &lt;p&gt;Instrumental variables are a super useful tool in causal inference for getting around the problem of confounding.&lt;/p&gt;
 
-&lt;p&gt;Suppose we&amp;rsquo;d like to estimate the average effect of a treatment $X$ like exposure to an ad on an outcome $Y$ like sales. For two weeks we track a group of people and whether they were exposed to the ad ($X = 1$) or not (($X = 0$) and what their sales were over the next month. We decide to fit a linear regression model to the data:
+&lt;p&gt;Suppose we&amp;rsquo;d like to estimate the average effect of a treatment $X$ like exposure to an ad on an outcome $Y$ like sales. For two weeks we track a group of people and whether they were exposed to the ad ($X = 1$) or not ($X = 0$) and what their sales were over the next month. We decide to fit a linear regression model to the data:
 $$Y = \beta X + \epsilon$$
 assuming $\mathbb{E}(\epsilon | X) = 0$.&lt;/p&gt;
 
@@ -56,9 +173,9 @@ X &amp;amp;=&amp;amp; \alpha W + \nu
 \end{eqnarray}
 $$&lt;/p&gt;
 
-&lt;p&gt;where $\mathbb{E}(\epsilon | X, W) = 0$ and $\mathbb{E}(\nu | W) = 0$. If $\mathbb{E}(\epsilon | X, W) = 0$, then &lt;a href=&#34;https://en.wikipedia.org/wiki/Ignorability&#34; target=&#34;_blank&#34;&gt;conditional ignorability&lt;/a&gt; is achieved, i.e. the potential outcomes $Y^{1}, Y^{0}$ are conditionally independent of $X$ given $W$. Then the least-squares estimate for $\beta$ in the model above would be an unbiased estimate for the ATE.&lt;/p&gt;
+&lt;p&gt;where $\mathbb{E}(\epsilon | X, W) = 0$ and $\mathbb{E}(\nu | W) = 0$. If $\mathbb{E}(\epsilon | X, W) = 0$, then &lt;a href=&#34;https://en.wikipedia.org/wiki/Ignorability&#34; target=&#34;_blank&#34;&gt;conditional ignorability&lt;/a&gt; is achieved, i.e. the potential outcomes $Y^{1}, Y^{0}$ are conditionally independent of $X$ given $W$. Then the least-squares estimate for $\beta$ in the $Y$-model above would be an unbiased estimate for the ATE.&lt;/p&gt;
 
-&lt;p&gt;Now in theory, if you were for example Google, you could achieve conditional ignorability by taking all the variables $W$ you fed into your algorithms for ad targeting and model just $Y = \beta X + \gamma W + \epsilon$ and get an unbiased estimate of the average treatment effect. There are several issues with this approach. First, you&amp;rsquo;re usually not Google and don&amp;rsquo;t have the data to adequately control for confounding. Second, even if you are Google, the algorithms used for ad targeting are enormously complex and rely on a large number of variables that may not even be clearly tracked.  What else can you do?&lt;/p&gt;
+&lt;p&gt;Now in theory, if you were for example Google, you could achieve conditional ignorability by taking all the variables $W$ you fed into your algorithms for ad targeting and model $Y = f(X, W)$ and get an unbiased estimate of the average treatment effect. There are several issues with this approach. First, you&amp;rsquo;re usually not Google and don&amp;rsquo;t have the data to adequately control for confounding. Second, even if you are Google, the algorithms used for ad targeting are enormously complex and rely on a large number of variables. What else can you do?&lt;/p&gt;
 
 &lt;p&gt;In the happy case where you have an &lt;em&gt;instrumental variable&lt;/em&gt;, you can still get unbiased estimates of the ATE without even modeling the confounding. An &lt;em&gt;instrumental variable&lt;/em&gt; is just a variable that causes the treatment $X$ but doesn&amp;rsquo;t affect $Y$ except through $X$:&lt;/p&gt;
 
