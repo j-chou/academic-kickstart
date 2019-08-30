@@ -3,11 +3,6 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
-    <loc>/post/2019-08-25-bias_from_unmeasured_confounding/</loc>
-    <lastmod>2019-08-06T13:41:33-05:00</lastmod>
-  </url>
-  
-  <url>
     <loc>/post/2019-09-01-clustered_standard_errors/</loc>
     <lastmod>2019-08-06T13:41:33-05:00</lastmod>
   </url>
@@ -39,6 +34,11 @@
   
   <url>
     <loc>/post/2019-09-01-abracadara/</loc>
+    <lastmod>2019-08-06T13:41:33-05:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/post/2019-08-25-bias_from_unmeasured_confounding/</loc>
     <lastmod>2019-08-06T13:41:33-05:00</lastmod>
   </url>
   
