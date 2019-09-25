@@ -36,7 +36,7 @@ I also made some visualizations of the bias under nonlinear confounding and the 
 
 {{< figure library="true" src="bias_quadratic_confounding_alpha1_20190822.png" title="Bias due to quadratic confounding." lightbox="true" >}}
 
-These graphs motivated me to work out the at least bias for the linear case. For simplicity, let's assume $Var(W) = Var(\epsilon\_1) = Var(\epsilon\_2) = 1$.
+These graphs motivated me to work out the bias analytically at least for the linear situation. For simplicity, let's assume $Var(W) = Var(\epsilon\_1) = Var(\epsilon\_2) = 1$.
 Then the least squares estimates for the coefficient of $X$ in the regression $Y \sim X$ is
 
 $$
@@ -48,4 +48,5 @@ R_{yx} &=& \frac{1}{Var(X)}\sum\_{i=1}^{n}(x\_i - \bar{x})(y\_i - \bar{y}) \\\\\
 \end{eqnarray}
 $$
 
-The omitted-variables bias can be derived for more general cases in this way as a function of the covariance matrix of the endogenous variables, but quickly gets complicated for nonlinear equations.
+The omitted-variables bias can be derived for more general cases in this way as a function of the covariance matrix of the endogenous variables, but appears to get quickly more complicated.
+This was a fun exercise, but in general to estimate sensitivity of a treatment effect estimate with respect to violations of nonconfoundedness, it's much faster to just run some simulations.

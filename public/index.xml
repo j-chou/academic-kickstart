@@ -5,7 +5,7 @@
     <link>/</link>
       <atom:link href="/index.xml" rel="self" type="application/rss+xml" />
     <description>jedchou</description>
-    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><lastBuildDate>Tue, 06 Aug 2019 13:41:33 -0500</lastBuildDate>
+    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><lastBuildDate>Thu, 19 Sep 2019 13:41:33 -0500</lastBuildDate>
     <image>
       <url>/img/icon-192.png</url>
       <title>jedchou</title>
@@ -13,29 +13,223 @@
     </image>
     
     <item>
-      <title>Clustering</title>
+      <title>Increasing precision of offline tests - Part 1</title>
+      <link>/post/2019-09-19-gee/</link>
+      <pubDate>Thu, 19 Sep 2019 13:41:33 -0500</pubDate>
+      <guid>/post/2019-09-19-gee/</guid>
+      <description>
+
+&lt;p&gt;One aspect of offline A/B tests that challenging than digital tests is that sample sizes are orders of magnitude smaller, so we really need to squeeze as much information as possible out of our data to get the answers we want. This often results in the use of more complex models compared to digital tests, where t-tests will usually suffice.&lt;/p&gt;
+
+&lt;p&gt;I&amp;rsquo;ve been reading the literature how to increase precision recently, and have come across to two primary strategies:&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;Stratified experiments (aka blocking)&lt;/li&gt;
+&lt;li&gt;Repeated measurements + modeling&lt;br /&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;In this post I want to lay out how to implement these strategies for improving the precision of your experiments. There&amp;rsquo;s a lot of literature on these topics and a lot of opinions out there about what&amp;rsquo;s the best way to run experiments.&lt;/p&gt;
+
+&lt;h2 id=&#34;blocking&#34;&gt;Blocking&lt;/h2&gt;
+
+&lt;p&gt;Blocking is fairly straightforward. The basic idea is from sampling theory, where if you want to estimate a population quantity like the mean, rather than just taking a completely random sample, you sample from substrata where the outcomes are similar and then use a weighted average as the estimator. In an offline A/B test, we often have historical data about outcomes and can create strata of experimental units with similar pre-treatment outcomes. Then we randomly assign roughly half of the units in each strata to treatment and half to control. After the experiment is run and we have some post-treatment data, we would estimate treatment effects in each strata and then combine them via&lt;/p&gt;
+
+&lt;p&gt;$$
+\begin{eqnarray}
+\hat{\tau} &amp;amp;=&amp;amp; \sum_{i=1}^{K} (\bar{Y}_{Ti} - \bar{Y}_{Ci}) \frac{N_{iT} + N_{iC}}{N}
+\end{eqnarray}
+$$&lt;/p&gt;
+
+&lt;p&gt;where $\bar{Y}_{Ti}, \bar{Y}_{Ci}$ is the mean outcome for treatment and control units respectively in the $i^{th}$ strata, and $N_{Ci}$, $N_{Ti}$ are the number of treatment and control units respectively in the $i^{th}$ strata. The variance of this estimator is&lt;/p&gt;
+
+&lt;p&gt;$$
+\begin{eqnarray}
+\hat{\sigma^2}(\hat{t}) &amp;amp;=&amp;amp; \sum_{i=1}^{K} \hat{\sigma^2}(\tau_i) (\frac{N_{iT} + N_{iC}}{N})^2
+\end{eqnarray}
+$$&lt;/p&gt;
+
+&lt;p&gt;This often results in a substantial reduction in the variance of $\tau$.&lt;/p&gt;
+
+&lt;p&gt;You could also use regression to incorporate information about these strata to increase precision of estimates, but that requires more care. David Freedman &lt;a href=&#34;https://www.stat.berkeley.edu/~census/neyregr.pdf&#34; target=&#34;_blank&#34;&gt;warned&lt;/a&gt; that &amp;ldquo;Regression adjustments are often made to experimental data. Since randomization does not justify the models, almost anything can happen.&amp;rdquo;&lt;/p&gt;
+
+&lt;p&gt;However, recently this &lt;a href=&#34;https://arxiv.org/pdf/1208.2301.pdf&#34; target=&#34;_blank&#34;&gt;paper&lt;/a&gt; by Winston Lin showed that some of the problems with using regression to analyze experimental data are taken care of when you have reasonably large sample size, the covariates are categorical, and you include all interactions between your treatment and your covariates.&lt;/p&gt;
+
+&lt;h2 id=&#34;repeated-measurements&#34;&gt;Repeated measurements&lt;/h2&gt;
+
+&lt;p&gt;Repeated measurements is not, as the name may suggest, just repeatedly measuring the same unit over time, keeping the treatments static. You actually want to randomize the treatment for each unit over time, so that each unit receives both test and control treatments. Then to estimate treatment effects we could use some model that takes into account correlation between measurements for the same unit, like a generalized estimating equation.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;# N : number of experimental units
+# M : number of measurements, starting at time 0
+# beta : true, homogeneous treatment effect
+# initial_outcomes_0 : outcomes at time 0
+# df : dataframe of size N x M of counterfactual outcomes under control
+# df1 : df + beta; dataframe of size N x M of counterfactual outcomes under treatment
+
+N = 1000
+M = 50   
+beta = 5
+initial_outcomes_0 = np.random.normal(100, 10, size=N)
+df = pd.DataFrame(np.zeros([N, M]))
+df[0] = initial_outcomes_0
+
+# generate random walks for each experimental unit
+change = 10
+for i in range(1, M):
+    deltas = [-change if random.random() &amp;lt; 0.5 else change for i in range(N)]
+    df[i] = df[i-1] + deltas
+df1 = df + beta
+df.head()
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Below we visualize some rows in the dataframe df above. The outcomes start somewhere around 100 and undergo a random walk for an additional 49 steps.
+The corresponding counterfactual time series under treatment for these time series is just the same time series shifted 5 units vertically.&lt;/p&gt;
+
+
+
+
+  
+
+
+
+
+&lt;figure&gt;
+
+  &lt;a data-fancybox=&#34;&#34; href=&#34;/img/time_series_examples_20190924.png&#34; &gt;
+
+&lt;img src=&#34;/img/time_series_examples_20190924.png&#34; &gt;
+&lt;/a&gt;
+
+
+&lt;figcaption data-pre=&#34;Figure &#34; data-post=&#34;:&#34; &gt;
+  &lt;h4&gt;Time series counterfactual outcomes under control for 10 random units.&lt;/h4&gt;
+  
+&lt;/figcaption&gt;
+
+&lt;/figure&gt;
+
+
+&lt;p&gt;We&amp;rsquo;ll explore two experimental designs:&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;(Reg) Randomly assign 500 units to control and 500 to treatment. Treatments are static across time for each unit.&lt;/li&gt;
+&lt;li&gt;(RM) For each unit, randomly assign 25 time periods to treatment and 25 time periods to control.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;We&amp;rsquo;ll also consider 3 ways to estimate treatment effects and standard errors.&lt;/p&gt;
+
+&lt;h3 id=&#34;method-1-naive&#34;&gt;Method 1 - Naive&lt;/h3&gt;
+
+&lt;p&gt;$$
+\begin{eqnarray}
+\hat{\tau} = \bar{Y_{T}} - \bar{Y_{C}}
+\end{eqnarray}
+$$&lt;/p&gt;
+
+&lt;h3 id=&#34;method-2-cluster&#34;&gt;Method 2 - Cluster&lt;/h3&gt;
+
+&lt;p&gt;$$
+\begin{eqnarray}
+\hat{\tau} = \bar{Y_{T}} - \bar{Y_{C}}
+\end{eqnarray}
+$$&lt;/p&gt;
+
+&lt;h3 id=&#34;method-3-gee&#34;&gt;Method 3 - GEE&lt;/h3&gt;
+
+&lt;p&gt;First let&amp;rsquo;s compare the two experimental designs. We&amp;rsquo;ll use the cluster-level estimator for average treatment effects since it&amp;rsquo;s the simplest. We simulated treatment assignments under the two experimental designs and &amp;hellip;&lt;/p&gt;
+
+
+
+
+  
+
+
+
+
+&lt;figure&gt;
+
+  &lt;a data-fancybox=&#34;&#34; href=&#34;/img/time_series_examples_20190924.png&#34; &gt;
+
+&lt;img src=&#34;/img/time_series_examples_20190924.png&#34; &gt;
+&lt;/a&gt;
+
+
+&lt;figcaption data-pre=&#34;Figure &#34; data-post=&#34;:&#34; &gt;
+  &lt;h4&gt;Time series counterfactual outcomes under control for 10 random units.&lt;/h4&gt;
+  
+&lt;/figcaption&gt;
+
+&lt;/figure&gt;
+
+
+&lt;p&gt;The density plots are both centered at 5, the true treatment effect, showing that the cluster-level estimates of the ATE are unbiased under both experimental designs. However, repeated measurements experimental design is drastically more precise. The standard error for our estimates under the regular experimental design was around 12.2, while for the repeated measurements design it was 1.2, an almost 8x increase in precision. This pattern held for a wide range of random walk step sizes, from 1 to 100.&lt;/p&gt;
+
+&lt;p&gt;Intuitively this is because outcomes are more similar within a unit than between units, so we can achieve a closer comparison by looking at outcomes at different time points for the same unit than comparing different units.&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;What&amp;rsquo;s the right way to compute standard errors for our estimator under these two experimental designs?&lt;/em&gt; The most straightforward way is to just aggregate everything and use the typically t-test. Another way is to model the correlation between observations for the same unit with a generalized estimating equation. GEEs were introduced by Kung-Yee Liang and Scott Zeger in this landmark &lt;a href=&#34;https://academic.oup.com/biomet/article/73/1/13/246001&#34; target=&#34;_blank&#34;&gt;paper&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;The GEE model is the following:
+$$
+\begin{eqnarray}
+g(\mu_i) = x_i^{T} \beta + \epsilon_i
+\end{eqnarray}
+$$&lt;/p&gt;
+
+&lt;p&gt;where $g$ is the link function, $\mu_{i}$ is the conditional mean of $y$ given $x$ (in this case $y$ is the outcome, and $x$ is the treatment) and $\beta$ is the vector of coefficients. In a GLM model, the covariance of $\epsilon_i$ would be diagonal, but the GEE model allows for nonzero elements outside the diagonal which means the $y_{i}$&amp;rsquo;s could be correlated.&lt;/p&gt;
+
+&lt;p&gt;In Python, the GEE model is implemented in the statsmodels package and fit by:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;import statsmodels.api as sm
+import statsmodels.formula.api as smf
+
+ind = sm.cov_struct.Exchangeable()
+mod = smf.gee(&#39;value ~ treat&#39;, &#39;id&#39;, dat,
+              cov_struct=ind,
+              family=sm.families.Gaussian())
+results = mod.fit()
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The AR-1 covariance structure is actually more appropriate since our data are random walks, but an exchangeable model fits much faster and will suffice for this simulation.&lt;/p&gt;
+
+&lt;p&gt;We got the following estimates of the ATE and standard errors:&lt;/p&gt;
+
+&lt;p&gt;INSERT STANDARD errors&lt;/p&gt;
+
+&lt;p&gt;which matches very well with the simulated estimates&amp;hellip;&lt;/p&gt;
+
+&lt;h3 id=&#34;concluding-remarks&#34;&gt;Concluding Remarks&lt;/h3&gt;
+
+&lt;p&gt;When possible, a repeated-measures experimental design can be very powerful, drastically reducing the required sample size. However, often treatments may have delayed effects on outcomes which&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Clusters and what to do about them</title>
       <link>/post/2019-09-01-clustered_standard_errors/</link>
       <pubDate>Tue, 06 Aug 2019 13:41:33 -0500</pubDate>
       <guid>/post/2019-09-01-clustered_standard_errors/</guid>
-      <description>&lt;p&gt;In an A/B test, there&amp;rsquo;s often some type of clustering of the units that may or may not constrain the treatment assignment. For example, in a store test one might only be able to assign treatments to geographic regions, so that all stores in the same region receive the same treatment. At the same time, we could also create arbitrary clusters of stores by historical sales volume, square footage of the building, etc. which may not be used in the treatment assignment at all but may be useful for analysis.&lt;/p&gt;
+      <description>
 
-&lt;p&gt;Clustering in data gives the researcher a dizzying number of degrees of freedom to analyze the data. In this post we&amp;rsquo;ll address the questions of &lt;em&gt;do we need to take the clusters into account when estimating the treatment effects and how do we rigorously account for clustering effects?&lt;/em&gt;&lt;/p&gt;
+&lt;h3 id=&#34;background&#34;&gt;Background&lt;/h3&gt;
 
-&lt;p&gt;Part of the confusion comes from a lack of clarity around the treatment effect that&amp;rsquo;s actually being estimated by the test statistic. There are often several quantities of interest in an experiment, including the most common Population Average Treatment Effect (PATE), the Cluster Average Treatment effect (CATE), and versions of these on the treated and untreated subgroups.&lt;/p&gt;
+&lt;p&gt;Pretty much all datasets have clusters. In A/B tests, clusters may be arbitrarily defined by the researcher, or they may actually constrain the treatment assignment.&lt;/p&gt;
 
-&lt;p&gt;Suppose there are $K$ clusters of size $N_i$ and cluster-specific means $\mu_i$ for an outcome $y$ for $i = 1, &amp;hellip;, K$. The population mean is the weighted average&lt;/p&gt;
+&lt;p&gt;For example, in a store test one might only be able to assign treatments to geographic regions, so that all stores in the same region receive the same treatment. At the same time, we could also create arbitrary clusters of stores based on historical sales volume, square footage of the building, etc.&amp;ndash;variables which may not be used in the treatment assignment at all. In this post we&amp;rsquo;ll explore how to handle clusters when estimating treatment effects.&lt;/p&gt;
+
+&lt;h3 id=&#34;pate-vs-cate&#34;&gt;PATE vs CATE&lt;/h3&gt;
+
+&lt;p&gt;Part of the confusion surrounding how to analyze clustered data comes from a lack of clarity around the treatment effect that&amp;rsquo;s actually being estimated by the test statistic. There are often several quantities of interest in an experiment, including the most common Population Average Treatment Effect (PATE), the Cluster Average Treatment effect (CATE), and versions of these on the treated and untreated subgroups. Let&amp;rsquo;s start with an example to illustrate these differences.&lt;/p&gt;
+
+&lt;p&gt;Suppose there are $K$ clusters of size $N_i$ with cluster-specific means $\mu_i$ for an outcome $y$ for $i = 1, &amp;hellip;, K$. The population mean is the weighted average&lt;/p&gt;
 
 &lt;p&gt;$$
-\sum_{i=1}^{K}\frac{N_i}{N}\mu_{i}
+\mu_{p} = \sum_{i=1}^{K}\frac{N_i}{N}\mu_{i}
 $$&lt;/p&gt;
 
 &lt;p&gt;where $N = \sum_{i=1}^{K}N_i$ is the total population size. In general this is different from the cluster mean, which is the unweighted average&lt;/p&gt;
 
 &lt;p&gt;$$
-\frac{1}{K}\sum_{i=1}^{K}\mu_i
+\mu_{c} = \frac{1}{K}\sum_{i=1}^{K}\mu_i
 $$&lt;/p&gt;
-
-&lt;p&gt;If there is significant heterogeneity between different clusters, then&lt;/p&gt;
 </description>
     </item>
     
@@ -53,7 +247,20 @@ $$&lt;/p&gt;
       <link>/post/2019-08-10-double_machine_learning/</link>
       <pubDate>Tue, 06 Aug 2019 13:41:33 -0500</pubDate>
       <guid>/post/2019-08-10-double_machine_learning/</guid>
-      <description></description>
+      <description>&lt;p&gt;Questions:
+1. What&lt;/p&gt;
+
+&lt;p&gt;Double machine learning is a recent method from the econometrics literature that uses ML tools to get causal results. This method is good for situations where you have a low dimensional parameter of interest (typically a treatment effect), but a complex high-dimensional confounder. Formally, we have&lt;/p&gt;
+
+&lt;p&gt;$$
+\begin{eqnarray}
+Y &amp;amp;=&amp;amp; D \theta + g(X) + \epsilon_{1}\\&lt;br /&gt;
+D &amp;amp;=&amp;amp; m(X) + \epsilon_{2}
+\end{eqnarray}
+$$&lt;/p&gt;
+
+&lt;p&gt;where $\mathbb{E}(\epsilon_1 | D, X) = 0$ and $\mathbb{E}(\epsilon_2 | X) = 0$.&lt;/p&gt;
+</description>
     </item>
     
     <item>
@@ -307,7 +514,7 @@ $$ --&gt;
 &lt;/figure&gt;
 
 
-&lt;p&gt;These graphs motivated me to work out the at least bias for the linear case. For simplicity, let&amp;rsquo;s assume $Var(W) = Var(\epsilon_1) = Var(\epsilon_2) = 1$.
+&lt;p&gt;These graphs motivated me to work out the bias analytically at least for the linear situation. For simplicity, let&amp;rsquo;s assume $Var(W) = Var(\epsilon_1) = Var(\epsilon_2) = 1$.
 Then the least squares estimates for the coefficient of $X$ in the regression $Y \sim X$ is&lt;/p&gt;
 
 &lt;p&gt;$$
@@ -319,7 +526,8 @@ R_{yx} &amp;amp;=&amp;amp; \frac{1}{Var(X)}\sum_{i=1}^{n}(x_i - \bar{x})(y_i - \
 \end{eqnarray}
 $$&lt;/p&gt;
 
-&lt;p&gt;The omitted-variables bias can be derived for more general cases in this way as a function of the covariance matrix of the endogenous variables, but quickly gets complicated for nonlinear equations.&lt;/p&gt;
+&lt;p&gt;The omitted-variables bias can be derived for more general cases in this way as a function of the covariance matrix of the endogenous variables, but appears to get quickly more complicated.
+This was a fun exercise, but in general to estimate sensitivity of a treatment effect estimate with respect to violations of nonconfoundedness, it&amp;rsquo;s much faster to just run some simulations.&lt;/p&gt;
 </description>
     </item>
     
